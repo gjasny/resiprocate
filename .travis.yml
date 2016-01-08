@@ -3,7 +3,8 @@ env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-   - secure: "MxxolEXPuFJ38hk7lhGqunKwsc8CIMUy8vCoswNDyFvuBm5FEcEaNe/SIjqli8fCXTrWh3LoCIyulezCoFkysjfSSmLFCngoAEvIWTX1hS9rnh+z1g7vUJiIcj1jiYFV+wk5C44IuMDfOEX6FFh4vRiT/IkZsrXf5IbxD08vUW8="
+   - secure: "VED/CgiKeSHoEieXZjzlgaOfWEhUl84b1xOSSuZnZ0DQeOTMeZ8+qewdloyRO+WaLNk7p1H9+FwgwRRzy91ljkfoXP1cb1f1LpPwivZv2Ffb2LY1twKXNb8iR8/kr+hQe1SBW1aHID0KFlEUuDu3VycWAXqKTWdjS2EY+6HAi5s="
+
 before_install:
  - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
  - sudo apt-get update -qq
