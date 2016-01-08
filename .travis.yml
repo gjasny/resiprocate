@@ -1,4 +1,5 @@
 language: cpp
+dist: trusty
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -6,12 +7,14 @@ env:
    - secure: "VED/CgiKeSHoEieXZjzlgaOfWEhUl84b1xOSSuZnZ0DQeOTMeZ8+qewdloyRO+WaLNk7p1H9+FwgwRRzy91ljkfoXP1cb1f1LpPwivZv2Ffb2LY1twKXNb8iR8/kr+hQe1SBW1aHID0KFlEUuDu3VycWAXqKTWdjS2EY+6HAi5s="
 
 before_install:
- - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
- - sudo apt-get update -qq
- - sudo apt-get install -qq gperf libasio-dev libboost-dev libc-ares-dev libdb++-dev libpopt-dev libssl-dev perl libmysqlclient-dev libpq-dev libfreeradius-client-dev libcppunit-dev autotools-dev libpcre3-dev libxerces-c-dev curl libcajun-dev python-cxx-dev libsipxtapi-dev libsrtp-dev
- - sudo add-apt-repository -y "deb http://http.debian.net/debian/ sid main"
- - sudo apt-get update -qq
- - sudo apt-get install -qq --force-yes libfreeradius-client-dev libcajun-dev libsipxtapi-dev
+ - sudo apt-get install gperf libasio-dev libboost-dev libc-ares-dev libdb++-dev libpopt-dev libssl-dev perl libmysqlclient-dev libpq-dev libfreeradius-client-dev libcppunit-dev autotools-dev libpcre3-dev libxerces-c-dev curl libcajun-dev python-cxx-dev libsipxtapi-dev libsrtp-dev
+ - sudo apt-get install libfreeradius-client-dev libcajun-dev libsipxtapi-dev
+ #- sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
+ #- sudo apt-get update -qq
+ #- sudo apt-get install -qq gperf libasio-dev libboost-dev libc-ares-dev libdb++-dev libpopt-dev libssl-dev perl libmysqlclient-dev libpq-dev libfreeradius-client-dev libcppunit-dev autotools-dev libpcre3-dev libxerces-c-dev curl libcajun-dev python-cxx-dev libsipxtapi-dev libsrtp-dev
+ #- sudo add-apt-repository -y "deb http://http.debian.net/debian/ sid main"
+ #- sudo apt-get update -qq
+ #- sudo apt-get install -qq --force-yes libfreeradius-client-dev libcajun-dev libsipxtapi-dev
 
 compiler:
   - gcc
