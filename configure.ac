@@ -324,6 +324,31 @@ AC_ARG_ENABLE(assert-syslog,
 AC_SEARCH_LIBS(gethostbyname, nsl)
 AC_SEARCH_LIBS(socket, socket)
 
+dnl resolv lib for iPhone
+
+AS_IF([test "x$host_vendor" = "xapple"], [
+  AC_MSG_CHECKING([for iPhone target])
+  AC_COMPILE_IFELSE([
+    AC_LANG_PROGRAM([[
+#include "TargetConditionals.h"
+    ]], [[
+#if TARGET_OS_IPHONE == 0
+#error Not an iPhone target
+#endif
+return 0;
+    ]])
+  ],[
+    AC_MSG_RESULT([yes])
+    AC_SEARCH_LIBS([res_servicename], [resolv], [
+      AC_DEFINE([ARES_USE_LIBRESOLV], [1], [Use resolver library to configure ares])
+    ], [
+      AC_MSG_ERROR([Unable to find libresolv which is required for iPhone targets])
+    ])
+  ],[
+    AC_MSG_RESULT([no])
+  ])
+])
+
 #Used to look for realtime library requirement (-lrt)
 CURL_CHECK_LIBS_CLOCK_GETTIME_MONOTONIC
 
