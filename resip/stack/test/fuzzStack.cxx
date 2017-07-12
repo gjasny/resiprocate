@@ -6,9 +6,11 @@ static void fuzzSdp(const unsigned char *data, unsigned long size)
   resip::HeaderFieldValue hfv(reinterpret_cast<const char*>(data), size);
   resip::Mime type("application", "sdp");
   resip::SdpContents sdp(hfv, type);
-  try {
+  try
+  {
     sdp.checkParsed();
-  } catch (resip::ParseException)
+  }
+  catch (resip::ParseException)
   {
   }
 }
