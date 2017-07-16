@@ -12,7 +12,6 @@
 #include "TestDtlsUdp.hxx"
 #include "CreateCert.hxx"
 
-using namespace std;
 using namespace dtls;
 using namespace resip;
 
@@ -31,7 +30,7 @@ int main(int argc,char **argv)
    TestTimerContext *ourTimer=new TestTimerContext();
    DtlsFactory *serverFactory=new DtlsFactory(std::auto_ptr<DtlsTimerContext>(ourTimer),serverCert,serverKey);
 
-   cout << "Created the factory\n";
+   std::cout << "Created the factory\n";
 
    Socket fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
    if ( fd == -1 )
@@ -49,9 +48,9 @@ int main(int argc,char **argv)
    int r=bind( fd,(struct sockaddr*)&myaddr, sizeof(myaddr));
    assert(r==0);
 
-   cout << "Made our UDP socket\n";
+   std::cout << "Made our UDP socket\n";
 
-   cout << "Entering wait loop\n";
+   std::cout << "Entering wait loop\n";
    TestDtlsUdpSocketContext *sockContext=0;
    DtlsSocket *dtlsSocket;
 
@@ -66,7 +65,7 @@ int main(int argc,char **argv)
       fdset.setRead(fd);
 
       UInt64 towait=ourTimer->getRemainingTime();
-      // cerr << "Invoking select for time " << towait << endl;
+      // std::cerr << "Invoking select for time " << towait << std::endl;
       int toread=fdset.selectMilliSeconds(towait);
       ourTimer->updateTimer();
 
@@ -83,11 +82,11 @@ int main(int argc,char **argv)
             {
                sockContext=new TestDtlsUdpSocketContext(fd,&src);
 
-               cout << "Made the socket context\n";          
+               std::cout << "Made the socket context\n";
 
                dtlsSocket=serverFactory->createServer(std::auto_ptr<DtlsSocketContext>(sockContext));
 
-               cout << "Made the DTLS socket\n";
+               std::cout << "Made the DTLS socket\n";
             }
 
             switch(DtlsFactory::demuxPacket(buffer,r))
@@ -101,8 +100,8 @@ int main(int argc,char **argv)
 
                sockContext->recvRtpData(buffer,r,buf2,&buf2l,sizeof(buf2));
 
-               cout << "Read RTP data of length " << buf2l << endl;
-               cout << buf2 << endl;
+               std::cout << "Read RTP data of length " << buf2l << std::endl;
+               std::cout << buf2 << std::endl;
 
                for(unsigned int i=0;i<buf2l;i++)
                {
