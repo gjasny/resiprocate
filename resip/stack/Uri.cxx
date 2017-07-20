@@ -1031,6 +1031,7 @@ Uri::parse(ParseBuffer& pb)
    }
    
    start = pb.position();
+
    static std::bitset<256> userPortOrPasswordDelim(Data::toBitset("@:\""));
    // stop at double-quote to prevent matching an '@' in a quoted string param. 
    pb.skipToOneOf(userPortOrPasswordDelim);
@@ -1083,6 +1084,11 @@ Uri::parse(ParseBuffer& pb)
    else
    {
       pb.reset(start);
+   }
+
+   if (pb.eof())
+   {
+      return;
    }
 
    mHostCanonicalized=false;
