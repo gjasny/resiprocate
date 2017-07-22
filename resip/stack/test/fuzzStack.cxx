@@ -1,11 +1,15 @@
 #include "rutil/DataStream.hxx"
 #include "rutil/Logger.hxx"
+
 #include "resip/stack/ParserCategories.hxx"
 #include "resip/stack/SdpContents.hxx"
+#include "resip/stack/SipMessage.hxx"
+#include "resip/stack/Uri.hxx"
 
-static void fuzzNameAddr(const unsigned char *data, unsigned long size)
+#include "TestSupport.hxx"
+
+static void fuzzNameAddr(const resip::Data& buffer)
 {
-  const resip::Data buffer(resip::Data::Share, reinterpret_cast<const char*>(data), size);
   try
   {
     resip::NameAddr illegal(buffer);
@@ -29,6 +33,28 @@ static void fuzzSdp(const unsigned char *data, unsigned long size)
   }
 }
 
+static void fuzzSip(const resip::Data& buffer)
+{
+  try
+  {
+    std::auto_ptr<resip::SipMessage> msg(resip::TestSupport::makeMessage(buffer));
+  }
+  catch (resip::ParseException)
+  {
+  }
+}
+
+static void fuzzUri(const resip::Data& buffer)
+{
+  try
+  {
+    resip::Uri uri(buffer);
+  }
+  catch (resip::ParseException)
+  {
+  }
+}
+
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv) {
   resip::Log::initialize(resip::Log::Cout, resip::Log::None, *argv[0]);
   return 0;
@@ -38,8 +64,12 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv) {
 extern "C" int LLVMFuzzerTestOneInput(const unsigned char *data,
                                       unsigned long size) {
 
-  fuzzNameAddr(data, size);
+  const resip::Data buffer(resip::Data::Share, reinterpret_cast<const char*>(data), size);
+
+  fuzzNameAddr(buffer);
   fuzzSdp(data, size);
+  fuzzSip(buffer);
+  fuzzUri(buffer);
 
   return 0;
 }

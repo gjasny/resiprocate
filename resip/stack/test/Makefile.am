@@ -192,7 +192,7 @@ noinst_HEADERS = digcalc.hxx \
 
 EXTRA_PROGRAMS = fuzzStack
 
-fuzzStack_SOURCES = fuzzStack.cxx
+fuzzStack_SOURCES = fuzzStack.cxx TestSupport.cxx
 fuzzStack_LDFLAGS = ${LIB_FUZZING_ENGINE}
 
 ##############################################################################
