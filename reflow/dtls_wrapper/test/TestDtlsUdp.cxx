@@ -35,7 +35,6 @@ void DumpHexa2(const unsigned char* pInMsg, unsigned long ulInMsgLen, std::strin
    }
 
    char tmp[5];
-   const unsigned char* pp = pInMsg;
 
    rOutDump += "\n\n***new data*** length: ";
    rOutDump += ulInMsgLen;
@@ -44,8 +43,7 @@ void DumpHexa2(const unsigned char* pInMsg, unsigned long ulInMsgLen, std::strin
    for (unsigned int z=0; z < ulInMsgLen; z++)
    {
       memset(tmp, 0, sizeof(tmp));
-      sprintf(tmp, "%02X ",pp[z]);
-      pp++;
+      sprintf(tmp, "%02X ", pInMsg[z]);
       rOutDump += tmp;
    }
 }
