@@ -102,6 +102,10 @@ int main(int argc,char **argv)
                cout << "Read RTP data of length " << buf2l << endl;
                cout << buf2 << endl;
 
+                    if (buf2l == 0) {
+                        exit(0);
+                    }
+
                for(unsigned int i=0;i<buf2l;i++)
                {
                   buf2[i]=toupper(buf2[i]);
