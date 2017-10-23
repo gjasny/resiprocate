@@ -5,6 +5,7 @@
 #ifdef USE_SSL 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <openssl/bio.h>
 #include <openssl/opensslv.h>
@@ -22,6 +23,11 @@ static inline BIO_METHOD *BIO_meth_new(int type, const char *name)
     biom->name = name;
   }
   return biom;
+}
+
+static void BIO_meth_free(BIO_METHOD *biom)
+{
+   free(biom);
 }
 
 #define BIO_meth_set_write(b, f) (b)->bwrite = (f)
@@ -56,18 +62,30 @@ typedef struct BIO_F_DWRAP_CTX_
 } BIO_F_DWRAP_CTX;
 
 
-BIO_METHOD *BIO_f_dwrap(void) 
+static BIO_METHOD* dtls_meth = NULL;
+
+static void free_dtls_meth()
 {
-   BIO_METHOD *meth = BIO_meth_new(BIO_TYPE_DWRAP, "dtls_wrapper");
-   BIO_meth_set_write(meth, dwrap_write);
-   BIO_meth_set_read(meth, dwrap_read);
-   BIO_meth_set_puts(meth, dwrap_puts);
-   BIO_meth_set_gets(meth, dwrap_gets);
-   BIO_meth_set_ctrl(meth, dwrap_ctrl);
-   BIO_meth_set_create(meth, dwrap_new);
-   BIO_meth_set_destroy(meth, dwrap_free);
-   BIO_meth_set_callback_ctrl(meth, dwrap_callback_ctrl);
-   return meth;
+   BIO_meth_free(dtls_meth);
+   dtls_meth = NULL;
+}
+
+BIO_METHOD *BIO_f_dwrap(void)
+{
+   if (!dtls_meth) {
+      dtls_meth = BIO_meth_new(BIO_TYPE_DWRAP, "dtls_wrapper");
+      BIO_meth_set_write(dtls_meth, dwrap_write);
+      BIO_meth_set_read(dtls_meth, dwrap_read);
+      BIO_meth_set_puts(dtls_meth, dwrap_puts);
+      BIO_meth_set_gets(dtls_meth, dwrap_gets);
+      BIO_meth_set_ctrl(dtls_meth, dwrap_ctrl);
+      BIO_meth_set_create(dtls_meth, dwrap_new);
+      BIO_meth_set_destroy(dtls_meth, dwrap_free);
+      BIO_meth_set_callback_ctrl(dtls_meth, dwrap_callback_ctrl);
+
+      atexit(free_dtls_meth);
+   }
+   return dtls_meth;
 }
 
 static int dwrap_new(BIO *bi) 
