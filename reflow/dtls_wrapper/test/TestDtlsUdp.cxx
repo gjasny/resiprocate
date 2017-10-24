@@ -1,4 +1,6 @@
- #include <iostream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #if !defined(WIN32)
 #include <sys/types.h>
@@ -34,18 +36,18 @@ void DumpHexa2(const unsigned char* pInMsg, unsigned long ulInMsgLen, std::strin
       return;
    }
 
-   char tmp[5];
-
-   rOutDump += "\n\n***new data*** length: ";
-   rOutDump += ulInMsgLen;
-   rOutDump += " dump: ";
+   std::ostringstream ss;
+   ss << "\n\n***new data***";
+   ss << " length: " << ulInMsgLen;
+   ss << " dump:";
 
    for (unsigned int z=0; z < ulInMsgLen; z++)
    {
-      memset(tmp, 0, sizeof(tmp));
-      sprintf(tmp, "%02X ", pInMsg[z]);
-      rOutDump += tmp;
+      ss << ' ';
+      ss << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(pInMsg[z]);
    }
+
+   rOutDump = ss.str();
 }
 
 using namespace std;
