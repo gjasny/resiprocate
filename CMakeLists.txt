@@ -23,6 +23,10 @@ option(BUILD_SHARED_LIBS "Build libraries as shared" TRUE)
 ### Dependencies ###
 ####################
 
+# Threads
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+find_package(Threads)
+
 # OpenSSL
 if(WITH_SSL)
    # SSL support is requested, so make it mandatory when calling find_package

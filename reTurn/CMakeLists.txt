@@ -63,6 +63,7 @@ add_executable(reTurnServer
 
 target_include_directories(reTurnServer PRIVATE ${PROJECT_SOURCE_DIR})
 target_link_libraries(reTurnServer ${OPENSSL_LIBRARIES} rutil)
+target_link_libraries(reTurnServer ${CMAKE_THREAD_LIBS_INIT})
 set_target_properties(reTurnServer PROPERTIES FOLDER reTurn)
 
 install(TARGETS reTurnServer DESTINATION ${CMAKE_INSTALL_BINDIR})
