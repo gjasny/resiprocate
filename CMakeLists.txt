@@ -143,6 +143,13 @@ else()
    message(STATUS "Missing libraries, will not build reTurn")
 endif()
 
+# CMake repro support is still in the works...
+if(CAJUN_FOUND)
+   #add_subdirectory(repro)
+else()
+   message(STATUS "Missing cajun, will not build repro")
+endif()
+
 if(OPENSSL_FOUND AND ASIO_FOUND AND Boost_FOUND AND SRTP_FOUND)
    add_subdirectory(reflow)
 else()
