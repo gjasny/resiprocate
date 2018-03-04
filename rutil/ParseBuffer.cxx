@@ -656,10 +656,10 @@ ParseBuffer::integer()
       fail(__FILE__, __LINE__,"Expected a digit, got eof ");
    }
 
-   int neg = 0;
+   bool negative = false;
    if (*mPosition == '-')
    {
-      neg = 1;
+      negative = true;
       ++mPosition;
       assertNotEof();
    }
@@ -667,6 +667,13 @@ ParseBuffer::integer()
    {
       ++mPosition;
       assertNotEof();
+   }
+
+   if (!isdigit(*mPosition))
+   {
+      Data msg("Expected a digit, got: ");
+      msg += Data(mPosition, (mEnd - mPosition));
+      fail(__FILE__, __LINE__,msg);
    }
 
     /*
@@ -686,20 +693,12 @@ ParseBuffer::integer()
      * Set any if any `digits' consumed; make it negative to indicate
      * overflow.
      */
-    unsigned int cutoff = neg ? -(unsigned int)INT_MIN : INT_MAX;
+    unsigned int cutoff = negative ? -(unsigned int)INT_MIN : INT_MAX;
     int cutlim = cutoff % 10;
     cutoff /= 10;
     unsigned int num = 0;
-    while (!eof()) {
-        int c = *mPosition;
-        if (isdigit(c)) {
-            c -= '0';
-        } else {
-            Data msg("Expected a digit, got: ");
-            msg += Data(mPosition, (mEnd - mPosition));
-            fail(__FILE__, __LINE__,msg);
-        }
-        mPosition++;
+    while (!eof() && isdigit(*mPosition)) {
+        int c = *mPosition++ - '0';
         if (num > cutoff || (num == cutoff && c > cutlim)) {
             fail(__FILE__, __LINE__,"Overflow detected.");
         }
@@ -707,8 +706,9 @@ ParseBuffer::integer()
         num *= 10;
         num += c;
     }
-    if (neg)
+    if (negative) {
         num = -num;
+    }
     return num;
 
     /*
