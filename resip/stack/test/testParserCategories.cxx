@@ -121,6 +121,57 @@ main(int arc, char** argv)
    static ExtensionParameter p_tag_ext("tag");
    static ExtensionParameter p_ttl_ext("ttl");
 
+    {
+        try
+        {
+            const int input = std::numeric_limits<int>::max();
+            std::stringstream ss;
+            ss << input;
+            const Data stringValue(ss.str());
+            ParseBuffer test(stringValue);
+            const int parsed = test.integer();
+            assert(input == parsed);
+        }
+        catch (ParseException& e)
+        {
+            resipCerr << e << endl;
+        }
+    }
+
+    {
+        try
+        {
+            const int input = std::numeric_limits<int>::min();
+            std::stringstream ss;
+            ss << input;
+            const Data stringValue(ss.str());
+            ParseBuffer test(stringValue);
+            const int parsed = test.integer();
+            assert(input == parsed);
+        }
+        catch (ParseException& e)
+        {
+            resipCerr << e << endl;
+        }
+    }
+
+    {
+        try
+        {
+            const unsigned char clusterfuzz_5764557084557312[] = {
+                0x2f, 0x3b, 0x71, 0x3d, 0x34, 0x32, 0x39, 0x34, 0x39, 0x36, 0x37, 0x32,
+                0x39, 0x35
+            };
+            const unsigned int clusterfuzz_5764557084557312_len = 14;
+            const resip::Data testData(clusterfuzz_5764557084557312, clusterfuzz_5764557084557312_len);
+            NameAddr test(testData);
+        }
+        catch (ParseException& e)
+        {
+            resipCerr << e << endl;
+        }
+    }
+    return 0;
    {
       TR _tr("Test poorly formed NameAddr by construction");
 

@@ -656,10 +656,10 @@ ParseBuffer::integer()
       fail(__FILE__, __LINE__,"Expected a digit, got eof ");
    }
 
-   int signum = 1;
+   bool negative = false;
    if (*mPosition == '-')
    {
-      signum = -1;
+      negative = true;
       ++mPosition;
       assertNotEof();
    }
@@ -671,13 +671,51 @@ ParseBuffer::integer()
 
    if (!isdigit(*mPosition))
    {
-       Data msg("Expected a digit, got: ");
-       msg += Data(mPosition, (mEnd - mPosition));
+      Data msg("Expected a digit, got: ");
+      msg += Data(mPosition, (mEnd - mPosition));
       fail(__FILE__, __LINE__,msg);
    }
+
+    /*
+     * Compute the cutoff value between legal numbers and illegal
+     * numbers.  That is the largest legal value, divided by the
+     * base.  An input number that is greater than this value, if
+     * followed by a legal input character, is too big.  One that
+     * is equal to this value may be valid or not; the limit
+     * between valid and invalid numbers is then based on the last
+     * digit.  For instance, if the range for longs is
+     * [-2147483648..2147483647] and the input base is 10,
+     * cutoff will be set to 214748364 and cutlim to either
+     * 7 (neg==0) or 8 (neg==1), meaning that if we have accumulated
+     * a value > 214748364, or equal but the next digit is > 7 (or 8),
+     * the number is too big, and we will return a range error.
+     *
+     * Set any if any `digits' consumed; make it negative to indicate
+     * overflow.
+     */
+    const unsigned int limit = negative ? -(unsigned int)INT_MIN : INT_MAX;
+    const int cutlim = limit % 10;
+    const unsigned int cutoff = limit / 10;
+
+    unsigned int num = 0;
+    while (!eof() && isdigit(*mPosition)) {
+        const unsigned c = *mPosition++;
+        if (num > cutoff || (num == cutoff && c > cutlim)) {
+            fail(__FILE__, __LINE__,"Overflow detected.");
+        }
+        num *= 10;
+        num += c;
+    }
+    if (negative) {
+        num = -num;
+    }
+    return num;
+
+    /*
+
    
-   int num = 0;
-   int last=0;
+   unsigned num = 0;
+   unsigned last=0;
    while (!eof() && isdigit(*mPosition))
    {
       last=num;
@@ -688,8 +726,11 @@ ParseBuffer::integer()
       }
       ++mPosition;
    }
-   
+    if (signum > 0 && num > static_cast<unsigned>(std::numeric_limits<int>::max())) {
+        fail(__FILE__, __LINE__, "Overflow detected.");
+    } else if (signum < 0 && num > std::numeric_limits<int>::min())
    return signum*num;
+     */
 }
 
 UInt8
