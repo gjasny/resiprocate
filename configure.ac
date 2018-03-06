@@ -401,6 +401,7 @@ AC_OUTPUT(Makefile \
 	resip/recon/test/Makefile \
 	p2p/s2c/s2c/Makefile \
 	p2p/Makefile \
+  contrib/googletest/Makefile \
 	)
 
 

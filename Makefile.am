@@ -3,7 +3,9 @@
 AUTOMAKE_OPTIONS = foreign dist-zip
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = rutil
+SUBDIRS = contrib/googletest
+
+SUBDIRS += rutil
 SUBDIRS += resip
 if BUILD_REPRO
 SUBDIRS += repro
