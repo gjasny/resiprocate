@@ -1,44 +1,44 @@
+#include <gtest/gtest.h>
+
 #include "rutil/Data.hxx"
 #include "rutil/MD5Stream.hxx"
 #include "rutil/Log.hxx"
-#include "assert.h"
+
 
 using namespace resip;
 using namespace std;
 
-
-int
-main()
+class MD5StreamTests : public testing::Test
 {
-   {
-      MD5Stream str;
-      assert(str.getHex() == "d41d8cd98f00b204e9800998ecf8427e");
-   }
+public:
+   MD5Stream str;
+};
 
-   {
-      MD5Stream str;
-      str << "qwertyuiop";
-      assert(str.getHex() == "6eea9b7ef19179a06954edd0f6c05ceb");
-   }
-
-   {
-      MD5Stream str;
-      Data data;
-
-      for (int i = 0; i < 1000; ++i)
-      {
-         cerr << i << endl;
-         str << i;
-         data += Data(i);
-
-         assert(str.getHex() == data.md5());
-      }      
-   }
-
-   cerr << "All OK" << endl;
-
-   return 0;
+TEST_F(MD5StreamTests, initial)
+{
+   EXPECT_EQ("d41d8cd98f00b204e9800998ecf8427e", str.getHex());
 }
+
+TEST_F(MD5StreamTests, someString)
+{
+   str << "qwertyuiop";
+   EXPECT_EQ("6eea9b7ef19179a06954edd0f6c05ceb", str.getHex());
+}
+
+TEST_F(MD5StreamTests, shouldBeSameAsData)
+{
+   Data data;
+
+   for (int i = 0; i < 1000; ++i)
+   {
+      //cerr << i << endl;
+      str << i;
+      data += Data(i);
+
+      EXPECT_EQ(data.md5(), str.getHex());
+   }
+}
+
 /* ====================================================================
  * The Vovida Software License, Version 1.0 
  * 

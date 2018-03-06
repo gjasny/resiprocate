@@ -6,7 +6,7 @@ EXTRA_DIST += sweepRandom.sh
 EXTRA_DIST += testConfigParse-1.config
 
 #AM_CXXFLAGS = -DUSE_ARES
-AM_CXXFLAGS = -I $(top_srcdir)
+AM_CXXFLAGS = -I $(top_srcdir) -isystem $(top_srcdir)/contrib/googletest
 
 LDADD = ../librutil.la
 #LDADD += ../../contrib/ares/libares.a
@@ -72,6 +72,7 @@ testInserter_SOURCES = testInserter.cxx
 testIntrusiveList_SOURCES = testIntrusiveList.cxx
 testLogger_SOURCES = testLogger.cxx TestSubsystemLogLevel.cxx
 testMD5Stream_SOURCES = testMD5Stream.cxx
+testMD5Stream_LDADD = $(LDADD) ../../contrib/googletest/libgmock_main.la
 testNetNs_SOURCES = testNetNs.cxx
 testParseBuffer_SOURCES = testParseBuffer.cxx
 testRandomHex_SOURCES = testRandomHex.cxx
